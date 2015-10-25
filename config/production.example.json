@@ -19,9 +19,19 @@
     "ReloadValidationCommand": "haproxy -c -f {{.}}"
   },
 
-  "StatsD": {
-    "Enabled": false,
-    "Host": "localhost:8125",
-    "Prefix": "bamboo-server.development."
+  "Stats": {
+    "StatsD": {
+      "Enabled": false,
+      "Host": "localhost:8125",
+      "Prefix": "bamboo-server.development."
+    },
+    "InfluxDB": {
+      "Enabled": false,
+      "Host": "localhost:8086",
+      "Prefix": "bamboo-server.development.",
+      "DB": "mesos",
+      "User": "user",
+      "Password": "pass"
+    }
   }
 }

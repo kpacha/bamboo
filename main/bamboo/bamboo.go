@@ -61,8 +61,8 @@ func main() {
 		}
 	}()
 
-	// Create StatsD client
-	conf.StatsD.CreateClient()
+	// Create Stats client
+	conf.Stats.CreateClient()
 
 	// Create Zookeeper connection
 	zkConn := listenToZookeeper(conf, eventBus)
@@ -85,7 +85,7 @@ func initServer(conf *configuration.Configuration, conn *zk.Conn, eventBus *even
 	serviceAPI := api.ServiceAPI{Config: conf, Zookeeper: conn}
 	eventSubAPI := api.EventSubscriptionAPI{Conf: conf, EventBus: eventBus}
 
-	conf.StatsD.Increment(1.0, "restart", 1)
+	conf.Stats.LogRestart()
 	// Status live information
 	router := martini.Classic()
 	router.Get("/status", api.HandleStatus)

@@ -36,13 +36,13 @@ type Handlers struct {
 func (h *Handlers) MarathonEventHandler(event MarathonEvent) {
 	log.Printf("%s => %s\n", event.EventType, event.Timestamp)
 	queueUpdate(h)
-	h.Conf.StatsD.Increment(1.0, "callback.marathon", 1)
+	h.Conf.Stats.LogMarathonCallback()
 }
 
 func (h *Handlers) ServiceEventHandler(event ServiceEvent) {
 	log.Println("Domain mapping: Stated changed")
 	queueUpdate(h)
-	h.Conf.StatsD.Increment(1.0, "reload.domain", 1)
+	h.Conf.Stats.LogReloadDomain()
 }
 
 var updateChan = make(chan *Handlers, 1)
@@ -78,14 +78,13 @@ func handleHAPUpdate(conf *configuration.Configuration, conn *zk.Conn) {
 	reloaded, err := ensureLatestConfig(conf, conn)
 
 	if err != nil {
-		conf.StatsD.Increment(1.0, "haproxy.reload.error", 1)
+		conf.Stats.LogReloadError()
 		log.Println("Failed to update HAProxy configuration:", err)
 	} else if reloaded {
-		conf.StatsD.Timing(1.0, "haproxy.reload.marathon.duration", time.Since(reloadStart))
-		conf.StatsD.Increment(1.0, "haproxy.reload.marathon.reloaded", 1)
+		conf.Stats.LogReloadSuccess(time.Since(reloadStart))
 		log.Println("Reloaded HAProxy configuration")
 	} else {
-		conf.StatsD.Increment(1.0, "haproxy.reload.skipped", 1)
+		conf.Stats.LogReloadSkipped()
 		log.Println("Skipped HAProxy configuration reload due to lack of changes")
 	}
 }

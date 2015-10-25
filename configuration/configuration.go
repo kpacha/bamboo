@@ -23,8 +23,8 @@ type Configuration struct {
 	// HAProxy output configuration
 	HAProxy HAProxy
 
-	// StatsD configuration
-	StatsD StatsD
+	// Stats configuration
+	Stats Stats
 }
 
 /*
@@ -58,9 +58,17 @@ func FromFile(filePath string) (Configuration, error) {
 	setValueFromEnv(&conf.HAProxy.ReloadValidationCommand, "HAPROXY_RELOAD_VALIDATION_CMD")
 	setValueFromEnv(&conf.HAProxy.ReloadCleanupCommand, "HAPROXY_RELOAD_CLEANUP_CMD")
 
-	setValueFromEnv(&conf.StatsD.Host, "STATSD_HOST")
-	setValueFromEnv(&conf.StatsD.Prefix, "STATSD_PREFIX")
-	setBoolValueFromEnv(&conf.StatsD.Enabled, "STATSD_ENABLED")
+	setValueFromEnv(&conf.Stats.StatsD.Host, "STATSD_HOST")
+	setValueFromEnv(&conf.Stats.StatsD.Prefix, "STATSD_PREFIX")
+	setBoolValueFromEnv(&conf.Stats.StatsD.Enabled, "STATSD_ENABLED")
+
+	setBoolValueFromEnv(&conf.Stats.InfluxDB.Enabled, "INFLUXDB_ENABLED")
+	setValueFromEnv(&conf.Stats.InfluxDB.Host, "INFLUXDB_HOST")
+	setValueFromEnv(&conf.Stats.InfluxDB.DB, "INFLUXDB_DB")
+	setValueFromEnv(&conf.Stats.InfluxDB.Username, "INFLUXDB_USERNAME")
+	setValueFromEnv(&conf.Stats.InfluxDB.Password, "INFLUXDB_PASSWORD")
+	setValueFromEnv(&conf.Stats.InfluxDB.Prefix, "INFLUXDB_PREFIX")
+
 	return *conf, err
 }
 
